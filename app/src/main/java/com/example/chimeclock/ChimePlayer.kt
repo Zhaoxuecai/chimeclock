@@ -56,13 +56,9 @@ class ChimePlayer(private val context: Context) {
     }
 
     init {
-        // 初始化 ToneGenerator，走 USAGE_ALARM 通道
+        // 初始化 ToneGenerator，走 STREAM_ALARM 通道
         try {
-            val audioAttributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_ALARM)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
-            toneGenerator = ToneGenerator(audioAttributes, TONE_VOLUME)
+            toneGenerator = ToneGenerator(AudioManager.STREAM_ALARM, TONE_VOLUME)
         } catch (e: Exception) {
             Log.e(TAG, "ToneGenerator 初始化失败", e)
         }
