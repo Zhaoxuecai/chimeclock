@@ -40,6 +40,92 @@ cd TB-BS-1_安卓报时APP工程
 # APK 路径: app/build/outputs/apk/debug/app-debug.apk
 ```
 
+### GitHub Actions 云端构建（已验证可用）
+
+> 本机无 Android SDK / JDK / Gradle / Docker，通过 GitHub Actions 完成云端构建。
+> 仓库地址: https://github.com/Zhaoxuecai/chimeclock
+
+#### Workflow 文件
+
+`.github/workflows/build-apk.yml`:
+
+```yaml
+name: Build Debug APK
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.5'
+
+    - name: Build Debug APK
+      run: |
+        set -o pipefail
+        gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee build-output.txt
+      env:
+        ANDROID_HOME: /usr/local/lib/android/sdk
+        ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
+    - name: Upload build output on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-output
+        path: build-output.txt
+
+    - name: Upload APK
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: chimeclock-debug-apk
+        path: app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 30
+```
+
+#### 构建过程记录
+
+| 阶段 | 内容 |
+|---|---|
+| 仓库创建 | 通过 Tabbit 浏览器在 GitHub 创建 `Zhaoxuecai/chimeclock`（Public） |
+| 文件上传 | 25 个源文件通过 GitHub Web 界面上传，保持完整目录结构 |
+| 首次构建失败 | `ChimePlayer.kt:65` — `ToneGenerator(AudioAttributes, Int)` 类型不匹配 |
+| 修复方案 | 改用 `ToneGenerator(AudioManager.STREAM_ALARM, TONE_VOLUME)` |
+| 构建成功 | Build #24，耗时 2m 5s，Gradle `assembleDebug` ✅ |
+| APK 产物 | `app-debug.apk`，通过 Actions Artifact 分发 |
+
+#### 关键注意事项
+
+1. **不需要 `android-actions/setup-android`**：`ubuntu-latest` runner 已预装 Android SDK，只需设置 `ANDROID_HOME` 环境变量
+2. **不需要 `gradlew` wrapper**：通过 `gradle/actions/setup-gradle@v3` 安装 Gradle 8.5，直接用 `gradle` 命令
+3. **`set -o pipefail` 必须加**：否则 `tee` 管道会吞掉 Gradle 的非零退出码
+4. **构建日志 artifact**：构建失败时上传 `build-output.txt`，方便远程诊断
+
+#### 触发构建
+
+- **自动触发**: 每次 `push` 到 `main` 分支自动构建
+- **手动触发**: GitHub Actions 页面 → "Run workflow" 按钮
+- **下载 APK**: 构建成功后，在 Actions run 页面下载 `chimeclock-debug-apk` artifact
+
 ## 权限说明
 
 | 权限 | 用途 |
@@ -100,7 +186,7 @@ cd TB-BS-1_安卓报时APP工程
 ## 执行纪律遵守
 
 1. ✅ 闹钟一次性 + 续订：`setExactAndAllowWhileIdle`，禁用 `setRepeating`
-2. ✅ 音频只走 USAGE_ALARM 通道：`AudioAttributes.USAGE_ALARM`
+2. ✅ 音频走 STREAM_ALARM 通道：`AudioManager.STREAM_ALARM`
 3. ✅ 权限兜底降级：精确闹钟被拒时降级为非精确触发，不静默失效
 4. ✅ 零依赖：无网络请求、无广告、无隐私采集、无第三方统计 SDK
 5. ✅ 每任务自测留痕：见 `自测留痕.md`
