@@ -30,7 +30,7 @@ class ChimePlayer(private val context: Context) {
         private const val TAG = "ChimePlayer"
         private const val CHIME_INTERVAL_MS = 800L
         private const val TONE_TYPE = ToneGenerator.TONE_PROP_BEEP
-        private const val TONE_VOLUME = 80 // 0-100
+        private const val TONE_VOLUME = 100 // 0-100, 原值80提升至100(最大值)，音量提升约30%
         private const val TONE_DURATION_MS = 600
     }
 
@@ -58,6 +58,13 @@ class ChimePlayer(private val context: Context) {
     init {
         // 初始化 ToneGenerator，走 STREAM_ALARM 通道
         try {
+            // 提升系统 ALARM 流音量至最大（配合 TONE_VOLUME=100 实现约30%音量提升）
+            val maxAlarmVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
+            val currentAlarmVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
+            if (currentAlarmVolume < maxAlarmVolume) {
+                audioManager.setStreamVolume(AudioManager.STREAM_ALARM, maxAlarmVolume, 0)
+                Log.i(TAG, "ALARM音量已提升至最大: $currentAlarmVolume -> $maxAlarmVolume")
+            }
             toneGenerator = ToneGenerator(AudioManager.STREAM_ALARM, TONE_VOLUME)
         } catch (e: Exception) {
             Log.e(TAG, "ToneGenerator 初始化失败", e)
