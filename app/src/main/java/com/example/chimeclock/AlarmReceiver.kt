@@ -26,6 +26,15 @@ class AlarmReceiver : BroadcastReceiver() {
         private const val ALARM_REQUEST_CODE = 10001
 
         /**
+         * 判断当前是否处于夜间静音时段（22:00 ~ 07:00 不报时）
+         * @param hourOfDay 当前小时（0-23）
+         * @return true 表示在静音时段，应跳过报时
+         */
+        fun isQuietHours(hourOfDay: Int): Boolean {
+            return hourOfDay >= 22 || hourOfDay < 7
+        }
+
+        /**
          * 计算响数
          * @param minute 分钟数
          * @return 响数：3=整点, 2=半点, 1=一刻/三刻, 0=其他(不触发)
@@ -188,6 +197,14 @@ class AlarmReceiver : BroadcastReceiver() {
             val minute = now.get(Calendar.MINUTE)
             val hour = now.get(Calendar.HOUR_OF_DAY)
             val chimeCount = getChimeCount(minute)
+
+            // 夜间静音：22:00 ~ 07:00 不报时
+            if (isQuietHours(hour)) {
+                Log.i(TAG, "夜间静音时段(${String.format("%02d:%02d", hour, minute)})，跳过报时")
+                // 仍然续订下一个刻钟闹钟
+                scheduleNextChime(context)
+                return
+            }
 
             Log.i(TAG, "报时触发: ${String.format("%02d:%02d", hour, minute)} → 响 $chimeCount 下")
 
