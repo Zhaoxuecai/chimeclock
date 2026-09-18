@@ -1,72 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
+    <string name="app_name">刻钟报时</string>
+    <string name="channel_name">报时服务</string>
+    <string name="channel_desc">前台服务常驻通知，保证刻钟报时持续运行</string>
+    <string name="notification_title">刻钟报时运行中</string>
+    <string name="notification_text">22:00-07:00静音 | 点击打开设置</string>
 
-        <string name="app_name">刻钟报时</string>
+    <string name="btn_start">开启报时</string>
+    <string name="btn_stop">关闭报时</string>
+    <string name="btn_preview_1">试听 1 下</string>
+    <string name="btn_preview_2">试听 2 下</string>
+    <string name="btn_preview_3">试听 3 下</string>
+    <string name="btn_guide">权限引导</string>
+    <string name="btn_battery_opt">电池优化白名单</string>
+    <string name="btn_exact_alarm">精确闹钟权限</string>
 
-        <string name="channel_name">报时服务</string>
+    <string name="status_on">报时已开启</string>
+    <string name="status_off">报时已关闭</string>
+    <string name="status_next">下次报时</string>
 
-        <string name="channel_desc">前台服务常驻通知，保证刻钟报时持续运行</string>
+    <string name="perm_denied_exact">精确闹钟权限被拒绝，将降级为非精确触发（偏差可能增大），请前往设置开启</string>
+    <string name="perm_denied_notif">通知权限被拒绝，前台服务通知可能不显示，但不影响报时功能</string>
+    <string name="perm_granted_exact">精确闹钟权限已授予</string>
+    <string name="perm_granted_notif">通知权限已授予</string>
 
-        <string name="notification_title">刻钟报时运行中</string>
+    <string name="guide_title">首次设置引导</string>
+    <string name="guide_step1">1. 授予精确闹钟权限（保证刻钟准时触发）</string>
+    <string name="guide_step2">2. 加入电池优化白名单（防止系统杀后台）</string>
+    <string name="guide_step3">3. 允许自启动（开机后自动恢复报时）</string>
 
-        <string name="notification_text">22:00-07:00静音 | 点击打开设置</string>
+    <string name="battery_opt_request">请求忽略电池优化</string>
+    <string name="exact_alarm_request">请求精确闹钟权限</string>
 
-
-
-        <string name="btn_start">开启报时</string>
-
-        <string name="btn_stop">关闭报时</string>
-
-        <string name="btn_preview_1">试听 1 下</string>
-
-        <string name="btn_preview_2">试听 2 下</string>
-
-        <string name="btn_preview_3">试听 3 下</string>
-
-        <string name="btn_guide">权限引导</string>
-
-        <string name="btn_battery_opt">电池优化白名单</string>
-
-        <string name="btn_exact_alarm">精确闹钟权限</string>
-
-
-
-        <string name="status_on">报时已开启</string>
-
-        <string name="status_off">报时已关闭</string>
-
-        <string name="status_next">下次报时</string>
-
-
-
-        <string name="perm_denied_exact">精确闹钟权限被拒绝，将降级为非精确触发（偏差可能增大），请前往设置开启</string>
-
-        <string name="perm_denied_notif">通知权限被拒绝，前台服务通知可能不显示，但不影响报时功能</string>
-
-        <string name="perm_granted_exact">精确闹钟权限已授予</string>
-
-        <string name="perm_granted_notif">通知权限已授予</string>
-
-
-
-        <string name="guide_title">首次设置引导</string>
-
-        <string name="guide_step1">1. 授予精确闹钟权限（保证刻钟准时触发）</string>
-
-        <string name="guide_step2">2. 加入电池优化白名单（防止系统杀后台）</string>
-
-        <string name="guide_step3">3. 允许自启动（开机后自动恢复报时）</string>
-
-
-
-        <string name="battery_opt_request">请求忽略电池优化</string>
-
-        <string name="exact_alarm_request">请求精确闹钟权限</string>
-
-
-
-        <string name="boot_toast">刻钟报时已恢复</string>
-
+    <string name="boot_toast">刻钟报时已恢复</string>
 </resources>
-
